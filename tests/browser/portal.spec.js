@@ -1,0 +1,33 @@
+import {test,expect} from '@playwright/test';
+test('desktop and mobile portal navigation and search',async({page})=>{
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('/ms');
+ await expect(page.getByRole('heading',{level:1})).toContainText('Maklumat');
+ await page.getByLabel('Cari maklumat').fill('Selamat');
+ await page.getByRole('button',{name:'Cari',exact:true}).click();
+ await expect(page.getByRole('heading',{name:'Selamat datang ke portal baharu'})).toBeVisible();
+ await page.getByRole('link',{name:'English',exact:true}).click();
+ await expect(page).toHaveURL(/\/en$/);
+ await page.setViewportSize({width:390,height:844});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+ await expect(page.getByRole('heading',{level:1})).toBeVisible();
+ await page.screenshot({path:'test-results/portal-mobile.png',fullPage:true});
+ expect(errors).toEqual([]);
+});
+test('staff can use rich text, save draft, preview, publish and sign out',async({page})=>{
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('/login');await page.getByLabel('Email address').fill('browser@example.invalid');await page.getByLabel('Password',{exact:true}).fill('Browser-Only-Test!123');await page.getByRole('button',{name:'Sign in'}).click();
+ await expect(page.getByRole('heading',{name:'Welcome, Browser.'})).toBeVisible();
+ await page.screenshot({path:'test-results/admin-dashboard.png',fullPage:true});
+ await page.getByRole('link',{name:'+ Create content'}).click();
+ await page.getByLabel('Title',{exact:true}).fill('Browser publication');
+ await expect(page.getByLabel('URL slug')).toHaveValue('browser-publication');
+ await page.getByRole('textbox',{name:'Content editor'}).fill('A browser-tested editorial publication.');
+ await page.getByRole('button',{name:'Save content'}).click();
+ await expect(page.getByRole('status')).toContainText('Content created');
+ const previewPromise=page.waitForEvent('popup');await page.getByRole('link',{name:'Preview'}).click();const preview=await previewPromise;await expect(preview.getByRole('heading',{name:'Browser publication'})).toBeVisible();await preview.close();
+ await page.getByLabel('Status',{exact:true}).selectOption('published');await page.getByRole('button',{name:'Save content'}).click();await expect(page.getByRole('status')).toContainText('Changes saved');
+ await page.getByRole('button',{name:'Sign out'}).click();await expect(page).toHaveURL(/\/login$/);
+ await page.goto('/ms/content/browser-publication');await expect(page.getByRole('heading',{name:'Browser publication'})).toBeVisible();
+ expect(errors).toEqual([]);
+});
