@@ -6,7 +6,7 @@ test('desktop and mobile portal navigation and search',async({page})=>{
  await page.getByLabel('Cari maklumat').fill('Selamat');
  await page.getByRole('button',{name:'Cari',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Selamat datang ke portal baharu'})).toBeVisible();
- await page.getByRole('link',{name:'EN',exact:true}).click();
+ await page.getByRole('link',{name:'English',exact:true}).click();
  await expect(page).toHaveURL(/\/en$/);
  await page.setViewportSize({width:390,height:844});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
