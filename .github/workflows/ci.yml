@@ -1,0 +1,49 @@
+name: Laravel CMS checks
+on:
+  push:
+    branches: [main, 'feat/**']
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, dom, intl, pdo_sqlite, fileinfo, gd
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: composer install --prefer-dist --no-interaction
+      - run: cp .env.example .env
+      - run: php artisan key:generate
+      - run: npm ci && npm run build
+      - run: vendor/bin/pint --test
+      - run: php artisan test
+      - run: php artisan view:cache
+      - run: php artisan route:cache
+      - run: composer audit
+      - run: npm audit --omit=dev
+
+      - run: npx playwright install --with-deps chromium
+      - name: Browser fixtures and smoke tests
+        env:
+          APP_ENV: testing
+          DB_DATABASE: /tmp/ppm-browser.sqlite
+        run: |
+          touch /tmp/ppm-browser.sqlite
+          php artisan migrate --force
+          php artisan db:seed --class=DemoSeeder --force
+          php tests/browser/setup.php
+          npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-test-results
+          path: test-results/
+          if-no-files-found: ignore

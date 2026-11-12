@@ -1,0 +1,13 @@
+@extends('layouts.base')
+@php
+$ms=$locale==='ms'; $settings=\App\Models\Setting::read('portal',[]);
+$siteTitle=$settings['title_'.$locale]??($ms?'Pejabat Perdana Menteri':"Prime Minister’s Office");
+$menus=\App\Models\Setting::read('menus',[])[$locale]??[];
+@endphp
+@section('shell')
+<div class="masthead"><div class="container"><span aria-hidden="true">🇲🇾</span> {{ config('portal.demo')?($ms?'Portal demonstrasi · Kerajaan Malaysia':'Demonstration portal · Government of Malaysia'):($ms?'Laman Web Rasmi Kerajaan Malaysia':'Official Malaysia Government Website') }} @if(config('portal.demo'))<span class="masthead-note">{{ $ms?'Dalam pembangunan':'In development' }}</span>@endif</div></div>
+<header class="portal-header"><div class="container brand-row"><a class="portal-brand" href="/{{ $locale }}">@if(!empty($settings['logo_media_id']) && ($logo=\App\Models\Media::whereKey($settings['logo_media_id'])->where('is_public',true)->first()))<img class="portal-logo" src="{{ route('media.show',$logo) }}" alt="{{ $logo->alt }}">@else<span class="brand-tile">PPM</span>@endif<span><small>{{ $ms?'PORTAL PEJABAT':'OFFICE PORTAL' }}</small>{{ $siteTitle }}</span></a><div class="header-actions"><a class="language {{ $ms?'selected':'' }}" href="/ms" lang="ms" aria-label="Bahasa Melayu">BM</a><span class="muted">|</span><a class="language {{ !$ms?'selected':'' }}" href="/en" lang="en" aria-label="English">EN</a><a class="outline small" href="/{{ $locale }}/search">{{ $ms?'Carian':'Search' }} <span aria-hidden="true">⌕</span></a></div></div>
+<nav class="portal-nav container" aria-label="{{ $ms?'Navigasi utama':'Main navigation' }}"><a href="/{{ $locale }}">{{ $ms?'Utama':'Home' }}</a>@foreach($menus as $item)<a href="{{ $item['url'] }}">{{ $item['label'] }}</a>@endforeach</nav></header>
+<main id="main">@yield('content')</main>
+<footer class="portal-footer"><div class="container footer-grid"><div><span class="eyebrow">PPM PORTAL</span><h2>{{ $siteTitle }}</h2><p>{{ $settings['address']??'Putrajaya, Malaysia' }}</p></div><div><h3>{{ $ms?'Hubungi kami':'Contact us' }}</h3><p>{{ $settings['phone']??'' }}</p>@if(!empty($settings['email']))<a href="mailto:{{ $settings['email'] }}">{{ $settings['email'] }}</a>@endif</div><div><h3>{{ $ms?'Pautan':'Explore' }}</h3><a href="/{{ $locale }}/search">{{ $ms?'Semua penerbitan':'All publications' }}</a><a href="https://www.pmo.gov.my/">{{ $ms?'Portal PMO semasa':'Current PMO portal' }} ↗</a></div></div><div class="container footer-bottom"><span>© {{ date('Y') }} {{ $siteTitle }}</span><span>{{ $ms?'Tema berasaskan MYDS':'MYDS-based theme' }} @if(config('portal.demo')) · {{ $ms?'Kandungan contoh':'Sample content' }} @endif</span></div></footer>
+@endsection
