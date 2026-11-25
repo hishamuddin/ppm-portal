@@ -1,0 +1,46 @@
+[
+  {
+    "slug": "pmo-sample-ai-temu-ai",
+    "type": "speech",
+    "title": "Peluncuran Prakarsa AI Pendidikan Negara: AI Temu AI",
+    "published_at": "2026-11-25 12:30:00",
+    "summary": "Ucapan di PICC, Putrajaya mengenai penguasaan AI dalam pendidikan, penghargaan kepada guru dan peranan ibu bapa. Perdana Menteri menekankan akhlak, budaya membaca dan penggunaan teknologi untuk membentuk generasi berilmu.",
+    "source_url": "https://www.pmo.gov.my/ms/ucapanterkini/teks-verbatim-yab-pm-peluncuran-prakarsa-ai-pendidikan-negara-ai-temu-ai/"
+  },
+  {
+    "slug": "pmo-sample-khatam-hadis-2026",
+    "type": "speech",
+    "title": "Majlis Khatam Sama’ Hadis Antarabangsa 2026",
+    "published_at": "2026-11-23 19:00:00",
+    "summary": "Ucapan di Masjid Putra mengenai tradisi pengajian hadis, peranan ulama dan pengimarahan masjid. Penekanan diberikan kepada pendidikan, akhlak dan pemeliharaan jati diri seiring kemajuan teknologi.",
+    "source_url": "https://www.pmo.gov.my/ms/ucapanterkini/teks-ucapan-verbatim-yab-pm-majlis-khatam-sama-hadis-jami-at-tirmidhi-dan-syamail-al-muhammadiyyah-peringkat-antarabangsa-2026/"
+  },
+  {
+    "slug": "pmo-sample-tadbir-urus",
+    "type": "gallery",
+    "title": "Tadbir urus, penguatkuasaan dan keselamatan negara",
+    "published_at": "2026-08-18 00:00:00",
+    "summary": "Penerbitan PMO mengenai sesi menghadap dan perkembangan siasatan, tatakelola serta keselamatan negara. Gambar ini diambil daripada galeri yang mengiringi penerbitan asal.",
+    "source_url": "https://www.pmo.gov.my/ms/beritabahasamelayu/kerajaan-madani-menjunjung-titah-baginda-tuanku-demi-memperkukuh-tadbir-urus-penguatkuasaan-dan-keselamatan-negara/",
+    "image": {
+      "file": "audience.jpg",
+      "url": "https://www.pmo.gov.my/wp-content/uploads/A1.jpg",
+      "alt": "Sesi menghadap berkaitan tadbir urus dan keselamatan negara — sumber PMO",
+      "credit": "Pejabat Perdana Menteri Malaysia"
+    }
+  },
+  {
+    "slug": "pmo-sample-mki-74",
+    "type": "post",
+    "title": "Mesyuarat MKI Kali Ke-74",
+    "published_at": "2026-01-14 00:00:00",
+    "summary": "Perdana Menteri menghadiri mesyuarat MKI yang dipengerusikan Sultan Perak. Penerbitan ini menyentuh amanah kepimpinan, pendidikan dan kerjasama Persekutuan dengan negeri dalam pengurusan hal ehwal Islam.",
+    "source_url": "https://www.pmo.gov.my/ms/beritabahasamelayu/mesyuarat-majlis-kebangsaan-bagi-hal-ehwal-agama-islam-malaysia-mki-kali-ke-74-yang-dipengerusikan-dymm-paduka-seri-sultan-perak-darul-ridzuan-sultan-nazrin-muizzuddin-shah-2/",
+    "image": {
+      "file": "mki.jpg",
+      "url": "https://www.pmo.gov.my/wp-content/uploads/SN-1-1.jpg",
+      "alt": "Perdana Menteri menghadiri Mesyuarat MKI Kali Ke-74 di Kuala Lumpur",
+      "credit": "Izzuddin Abd Radzak / Pejabat Perdana Menteri"
+    }
+  }
+]

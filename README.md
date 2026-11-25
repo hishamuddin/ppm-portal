@@ -29,7 +29,7 @@ npm ci
 npm run build
 php artisan cms:admin your-email@example.gov.my --name="Your Name"
 # Optional local demonstration content; never seed this in production:
-php artisan db:seed --class=DemoSeeder
+php artisan db:seed --class=PmoSampleSeeder
 php artisan serve
 ```
 
@@ -55,4 +55,4 @@ Browser smoke tests are also included. They cover the bilingual public portal at
 
 Reference guidance: [MYDS](https://design.digital.gov.my/en), [Laravel integration](https://design.digital.gov.my/en/docs/develop/laravel), and [style configuration](https://design.digital.gov.my/en/docs/develop/style-configuration). This implementation uses Laravel Blade with `@govtechmy/myds-style`, a 12/8/4 responsive layout approach, accessible form labels, visible focus, skip navigation and reduced-motion support. The React component package is not required by this Blade implementation. The building illustration is a repository-native SVG; replace the PPM monogram with an approved logo using Portal settings.
 
-This is a first working CMS release, not full WordPress compatibility or a certified MYDS/SPLaSK implementation. See [deployment and operations](docs/DEPLOYMENT.md) for setup, workflow, limits and launch requirements. The demonstration banner is controlled by `PORTAL_DEMO`; leave it enabled until authorised launch. Real PMO articles, personal data, government credentials and production keys are not bundled.
+This is a first working CMS release, not full WordPress compatibility or a certified MYDS/SPLaSK implementation. See [deployment and operations](docs/DEPLOYMENT.md) for setup, workflow, limits and launch requirements. The demonstration banner is controlled by `PORTAL_DEMO`; leave it enabled until authorised launch. Four opt-in PMO sample summaries and two credited photo fixtures are included; see [sample sources and Windows git pull guide](docs/PMO-SAMPLES.md). Full official transcripts, personal data, government credentials and production keys are not bundled.
