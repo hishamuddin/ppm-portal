@@ -57,7 +57,7 @@ class PmoSampleSeederTest extends TestCase
     {
         $this->app->instance('env', 'production');
         try {
-            $this->seed(PmoSampleSeeder::class);
+            $this->app->make(PmoSampleSeeder::class)->run();
             $this->fail('Production must reject sample seeding.');
         } catch (\RuntimeException $exception) {
             $this->assertSame('PMO sample data is disabled in production.', $exception->getMessage());
