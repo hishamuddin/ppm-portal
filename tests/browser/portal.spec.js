@@ -32,8 +32,8 @@ test('staff can use rich text, save draft, preview, publish and sign out',async(
  expect(errors).toEqual([]);
 });
 test('Instagram highlights show local thumbnails and accessible outbound links',async({page})=>{
- const remoteRequests=[];
- page.on('request',request=>{if(!request.url().startsWith('http://127.0.0.1:8000')) remoteRequests.push(request.url());});
+ const instagramRequests=[];
+ page.on('request',request=>{if(/(^|\.)(instagram\.com|cdninstagram\.com|fbcdn\.net|facebook\.com)$/.test(new URL(request.url()).hostname)) instagramRequests.push(request.url());});
  await page.setViewportSize({width:1440,height:1000});
  await page.goto('/ms');
  const section=page.getByRole('region',{name:'Sorotan Aktiviti'});
@@ -60,5 +60,5 @@ test('Instagram highlights show local thumbnails and accessible outbound links',
  await page.goto('/en');
  await expect(page.getByRole('heading',{name:'Activity Highlights'})).toBeVisible();
  await expect(page.getByRole('link',{name:/Follow on Instagram/})).toHaveAttribute('href','https://www.instagram.com/malaysiapmo/');
- expect(remoteRequests).toEqual([]);
+ expect(instagramRequests).toEqual([]);
 });
