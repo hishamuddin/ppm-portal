@@ -1,0 +1,3 @@
+@extends('layouts.admin')
+@section('title','Trash')
+@section('content')<h1>Trash</h1><p class="muted">Recover deleted content as a draft.</p><div class="panel table-scroll"><table><thead><tr><th>Title</th><th>Deleted</th><th>Action</th></tr></thead><tbody>@forelse($items as $item)<tr><td>{{ $item->title }}</td><td>{{ $item->deleted_at }}</td><td><form method="post" action="{{ route('admin.untrash',$item->id) }}">@csrf<button class="outline">Recover draft</button></form></td></tr>@empty<tr><td colspan="3">Trash is empty.</td></tr>@endforelse</tbody></table></div>{{ $items->links('partials.pagination') }}@endsection

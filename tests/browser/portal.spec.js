@@ -1,0 +1,64 @@
+import {test,expect} from '@playwright/test';
+test('desktop and mobile portal navigation and search',async({page})=>{
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('/ms');
+ await expect(page.getByRole('heading',{level:1})).toContainText('Maklumat');
+ await page.getByLabel('Cari maklumat').fill('Selamat');
+ await page.getByRole('button',{name:'Cari',exact:true}).click();
+ await expect(page.getByRole('heading',{name:'Selamat datang ke portal baharu'})).toBeVisible();
+ await page.getByRole('link',{name:'English',exact:true}).click();
+ await expect(page).toHaveURL(/\/en$/);
+ await page.setViewportSize({width:390,height:844});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+ await expect(page.getByRole('heading',{level:1})).toBeVisible();
+ await page.screenshot({path:'test-results/portal-mobile.png',fullPage:true});
+ expect(errors).toEqual([]);
+});
+test('staff can use rich text, save draft, preview, publish and sign out',async({page})=>{
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('/login');await page.getByLabel('Email address').fill('browser@example.invalid');await page.getByLabel('Password',{exact:true}).fill('Browser-Only-Test!123');await page.getByRole('button',{name:'Sign in'}).click();
+ await expect(page.getByRole('heading',{name:'Welcome, Browser.'})).toBeVisible();
+ await page.screenshot({path:'test-results/admin-dashboard.png',fullPage:true});
+ await page.getByRole('link',{name:'+ Create content'}).click();
+ await page.getByLabel('Title',{exact:true}).fill('Browser publication');
+ await expect(page.getByLabel('URL slug')).toHaveValue('browser-publication');
+ await page.getByRole('textbox',{name:'Content editor'}).fill('A browser-tested editorial publication.');
+ await page.getByRole('button',{name:'Save content'}).click();
+ await expect(page.getByRole('status')).toContainText('Content created');
+ const previewPromise=page.waitForEvent('popup');await page.getByRole('link',{name:'Preview'}).click();const preview=await previewPromise;await expect(preview.getByRole('heading',{name:'Browser publication'})).toBeVisible();await preview.close();
+ await page.getByLabel('Status',{exact:true}).selectOption('published');await page.getByRole('button',{name:'Save content'}).click();await expect(page.getByRole('status')).toContainText('Changes saved');
+ await page.getByRole('button',{name:'Sign out'}).click();await expect(page).toHaveURL(/\/login$/);
+ await page.goto('/ms/content/browser-publication');await expect(page.getByRole('heading',{name:'Browser publication'})).toBeVisible();
+ expect(errors).toEqual([]);
+});
+test('Instagram highlights show local thumbnails and accessible outbound links',async({page})=>{
+ const instagramRequests=[];
+ page.on('request',request=>{if(/(^|\.)(instagram\.com|cdninstagram\.com|fbcdn\.net|facebook\.com)$/.test(new URL(request.url()).hostname)) instagramRequests.push(request.url());});
+ await page.setViewportSize({width:1440,height:1000});
+ await page.goto('/ms');
+ const section=page.getByRole('region',{name:'Sorotan Aktiviti'});
+ await section.scrollIntoViewIfNeeded();
+ const cards=section.locator('.instagram-card');
+ await expect(cards).toHaveCount(8);
+ for(const card of await cards.all()){
+  await expect(card).toHaveAttribute('href',/^https:\/\/www\.instagram\.com\/(p|reel)\/[A-Za-z0-9_-]+\/$/);
+  await expect(card).toHaveAttribute('target','_blank');
+  await expect(card).toHaveAccessibleName(/tab baharu/);
+  await expect.poll(()=>card.locator('img').evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
+ }
+ const boxes=await cards.evaluateAll(links=>links.map(link=>({x:link.offsetLeft,y:link.getBoundingClientRect().top})));
+ expect(boxes[0].y).toBe(boxes[3].y);
+ expect(boxes[4].y).toBeGreaterThan(boxes[0].y);
+ await expect(section.getByRole('link',{name:/Ikuti di Instagram/})).toHaveAttribute('href','https://www.instagram.com/malaysiapmo/');
+ await section.screenshot({path:'test-results/instagram-desktop.png'});
+ await page.setViewportSize({width:390,height:844});
+ const mobileRows=await cards.evaluateAll(links=>links.map(link=>link.getBoundingClientRect().top));
+ expect(mobileRows[0]).toBe(mobileRows[1]);
+ expect(mobileRows[2]).toBeGreaterThan(mobileRows[0]);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await section.screenshot({path:'test-results/instagram-mobile.png'});
+ await page.goto('/en');
+ await expect(page.getByRole('heading',{name:'Activity Highlights'})).toBeVisible();
+ await expect(page.getByRole('link',{name:/Follow on Instagram/})).toHaveAttribute('href','https://www.instagram.com/malaysiapmo/');
+ expect(instagramRequests).toEqual([]);
+});

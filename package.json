@@ -1,0 +1,22 @@
+{
+  "name": "ppm-portal",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test:browser": "playwright test"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.2.0",
+    "@fontsource/poppins": "^5.2.0",
+    "@govtechmy/myds-style": "^1.0.0",
+    "@tiptap/core": "^3.0.0",
+    "@tiptap/starter-kit": "^3.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.0",
+    "laravel-vite-plugin": "^3.1",
+    "vite": "^8.0.0"
+  }
+}
