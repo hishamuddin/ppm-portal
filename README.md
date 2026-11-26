@@ -35,6 +35,10 @@ php artisan serve
 
 Open `http://localhost:8000/ms` (BM), `/en` (English), or `/login` (staff). `cms:admin` prompts for a hidden password; there is no seeded working login. For frontend development, run `npm run dev` in another terminal. Use `php artisan cms:reset-password email@example.gov.my` for trusted-console password recovery.
 
+## Instagram highlights
+
+The homepage includes eight curated @malaysiapmo links with locally hosted thumbnails, responsive cards and a follow button. See [Instagram configuration and update guide](docs/INSTAGRAM.md). This is a selected snapshot, not an automatic feed.
+
 ## Verification
 
 ```bash

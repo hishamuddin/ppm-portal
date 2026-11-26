@@ -31,3 +31,34 @@ test('staff can use rich text, save draft, preview, publish and sign out',async(
  await page.goto('/ms/content/browser-publication');await expect(page.getByRole('heading',{name:'Browser publication'})).toBeVisible();
  expect(errors).toEqual([]);
 });
+test('Instagram highlights show local thumbnails and accessible outbound links',async({page})=>{
+ const remoteRequests=[];
+ page.on('request',request=>{if(!request.url().startsWith('http://127.0.0.1:8000')) remoteRequests.push(request.url());});
+ await page.setViewportSize({width:1440,height:1000});
+ await page.goto('/ms');
+ const section=page.getByRole('region',{name:'Sorotan Aktiviti'});
+ await section.scrollIntoViewIfNeeded();
+ const cards=section.locator('.instagram-card');
+ await expect(cards).toHaveCount(8);
+ for(const card of await cards.all()){
+  await expect(card).toHaveAttribute('href',/^https:\/\/www\.instagram\.com\/(p|reel)\/[A-Za-z0-9_-]+\/$/);
+  await expect(card).toHaveAttribute('target','_blank');
+  await expect(card).toHaveAccessibleName(/tab baharu/);
+  await expect.poll(()=>card.locator('img').evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
+ }
+ const boxes=await cards.evaluateAll(links=>links.map(link=>({x:link.offsetLeft,y:link.getBoundingClientRect().top})));
+ expect(boxes[0].y).toBe(boxes[3].y);
+ expect(boxes[4].y).toBeGreaterThan(boxes[0].y);
+ await expect(section.getByRole('link',{name:/Ikuti di Instagram/})).toHaveAttribute('href','https://www.instagram.com/malaysiapmo/');
+ await section.screenshot({path:'test-results/instagram-desktop.png'});
+ await page.setViewportSize({width:390,height:844});
+ const mobileRows=await cards.evaluateAll(links=>links.map(link=>link.getBoundingClientRect().top));
+ expect(mobileRows[0]).toBe(mobileRows[1]);
+ expect(mobileRows[2]).toBeGreaterThan(mobileRows[0]);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await section.screenshot({path:'test-results/instagram-mobile.png'});
+ await page.goto('/en');
+ await expect(page.getByRole('heading',{name:'Activity Highlights'})).toBeVisible();
+ await expect(page.getByRole('link',{name:/Follow on Instagram/})).toHaveAttribute('href','https://www.instagram.com/malaysiapmo/');
+ expect(remoteRequests).toEqual([]);
+});
